@@ -9,6 +9,7 @@
                 Update Vending Machine {{ vending_machine.id }} ({{ vending_machine.name }})
             </h2>
             <form action="/api/vending_machines/update/{{vending_machine.id}}" method="post" autocomplete="off">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="input-group input-group-md mb-4">
                 <span class="input-group-text" id="name" style="width: 40px">
                     <i class="fa fa-user"></i>

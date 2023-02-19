@@ -69,6 +69,7 @@
                                                 Close
                                             </button>
                                             <form action="/api/vending_machines/delete/{{vm.id}}" method="post">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                                 <button class="btn btn-danger" type="submit">
                                                     <i class="fa fa-trash"></i> &nbsp; Delete
                                                 </button>
@@ -93,6 +94,7 @@
                                 <div class="row">
                                     <div class="accordian-body collapse" id="{{vm.id}}-add-product-form">
                                         <form action="/api/product_stocks/add/{{vm.id}}" method="post">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                             <div class="row p-3">
                                                 <div class="container bg-dark border border-dark-subtle rounded-3 pb-3">
                                                     <div class="row">
@@ -181,6 +183,7 @@
                                                             </button>
                                                             <form action="/api/product_stocks/delete/{{vm.id}}/{{product.id}}"
                                                                   method="post">
+                                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                                                 <button class="btn btn-danger" type="submit">
                                                                     <i class="fa fa-trash"></i> &nbsp; Delete
                                                                 </button>
@@ -215,6 +218,7 @@
                                                         </div>
                                                         <form action="/api/product_stocks/update/{{vm.id}}/{{product.id}}"
                                                               method="post">
+                                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                                             <div class="modal-body">
                                                                 In Vending Machine <b>{{vm.id}}</b> <b>({{vm.name}})</b>
                                                                 <div class="row p-3 pt-4">
