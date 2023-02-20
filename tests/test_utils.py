@@ -1,5 +1,4 @@
 """Test: Utilities."""
-
 import pytest
 
 from vmms_webapp.database import utils
@@ -89,3 +88,22 @@ def test_get_stocks_by_vm_id(database_service: DatabaseService):
         Product(id=2, name="pringle", price=30.0): 200,
         Product(id=3, name="lay's", price=50.0): 300,
     }
+
+
+def test_get_stock_records(database_service: DatabaseService):
+    assert utils.get_stock_records(database_service) == []
+    utils.save_stock_records(database_service)
+    assert utils.get_stock_records(database_service)
+
+
+def test_get_stock_records_by_vm_id(database_service: DatabaseService):
+    assert len(utils.get_stock_records_by_vm_id(database_service, 1)) == 2
+    assert all(
+        stock_record.vm_id == 1
+        for stock_record in utils.get_stock_records_by_vm_id(database_service, 1)
+    )
+
+
+def test_get_stock_records_by_prod_id(database_service: DatabaseService):
+    assert len(utils.get_stock_records_by_prod_id(database_service, 1)) == 0
+    assert utils.get_stock_records_by_prod_id(database_service, 1) == []

@@ -184,6 +184,112 @@ def create_app(database_service: DatabaseService) -> Flask:
             }
         return make_response(jsonify(response), status_code)
 
+    @app.route("/api/stock_records/", methods=["GET"])
+    def api_get_stock_records() -> Response:
+        status_code = http.HTTPStatus.OK
+        try:
+            stock_records = utils.get_stock_records(database_service)
+            response = {
+                "status": "success",
+                "data": {
+                    "get": list(
+                        map(
+                            lambda stock_record: stock_record.to_dict(),
+                            stock_records,
+                        )
+                    )
+                },
+                "message": "all stock records are successfully retrieved",
+            }
+        except Exception as e:
+            print("api_get_stock_records:", e)
+            status_code = http.HTTPStatus.BAD_REQUEST
+            response = {
+                "status": "error",
+                "data": {"get": []},
+                "message": "unable to retrieve stock records",
+            }
+        return make_response(jsonify(response), status_code)
+
+    @app.route("/api/stock_records/save", methods=["POST"])
+    def api_save_stock_records() -> Response:
+        status_code = http.HTTPStatus.OK
+        try:
+            response = utils.save_stock_records(database_service)
+        except Exception as e:
+            print("api_save_stock_records:", e)
+            status_code = http.HTTPStatus.BAD_REQUEST
+            response = {
+                "status": "error",
+                "data": {"post": []},
+                "message": "unable to record current stocks",
+            }
+        return make_response(jsonify(response), status_code)
+
+    @app.route(
+        "/api/stock_records/timeline/vending_machines/<int:vm_id>", methods=["GET"]
+    )
+    def api_get_timeline_vending_machine(vm_id: int) -> Response:
+        status_code = http.HTTPStatus.OK
+        try:
+            stock_records = utils.get_stock_records_by_vm_id(database_service, vm_id)
+            stock_timeline = sorted(
+                stock_records, key=lambda record: (record.prod_id, record.time_stamp)
+            )
+            response = {
+                "status": "success",
+                "data": {
+                    "get": list(
+                        map(
+                            lambda stock_record: stock_record.to_dict(),
+                            stock_timeline,
+                        )
+                    )
+                },
+                "message": f"all stock records of vending machine {vm_id} are successfully retrieved",
+            }
+        except Exception as e:
+            print("api_get_stock_records:", e)
+            status_code = http.HTTPStatus.BAD_REQUEST
+            response = {
+                "status": "error",
+                "data": {"get": []},
+                "message": f"unable to retrieve stock records of vending machine {vm_id}",
+            }
+        return make_response(jsonify(response), status_code)
+
+    @app.route("/api/stock_records/timeline/products/<int:prod_id>", methods=["GET"])
+    def api_get_timeline_product(prod_id: int) -> Response:
+        status_code = http.HTTPStatus.OK
+        try:
+            stock_records = utils.get_stock_records_by_prod_id(
+                database_service, prod_id
+            )
+            stock_timeline = sorted(
+                stock_records, key=lambda record: (record.vm_id, record.time_stamp)
+            )
+            response = {
+                "status": "success",
+                "data": {
+                    "get": list(
+                        map(
+                            lambda stock_record: stock_record.to_dict(),
+                            stock_timeline,
+                        )
+                    )
+                },
+                "message": f"all stock records of product {prod_id} are successfully retrieved",
+            }
+        except Exception as e:
+            print("api_get_stock_records:", e)
+            status_code = http.HTTPStatus.BAD_REQUEST
+            response = {
+                "status": "error",
+                "data": {"get": []},
+                "message": f"unable to retrieve stock records of product {prod_id}",
+            }
+        return make_response(jsonify(response), status_code)
+
     return app
 
 

@@ -6,6 +6,7 @@ This script contains a collection of helper functions.
 from __future__ import annotations
 
 import os
+from datetime import datetime
 from typing import TYPE_CHECKING
 
 from flask import Request
@@ -13,6 +14,7 @@ from sqlalchemy.exc import IntegrityError
 
 from vmms_webapp.models.product import Product
 from vmms_webapp.models.stock import Stock
+from vmms_webapp.models.stock_record import StockRecord
 from vmms_webapp.models.vending_machine import VendingMachine
 
 if TYPE_CHECKING:
@@ -67,6 +69,19 @@ def get_products(database_service: DatabaseService) -> list[Product]:
     return session.query(Product).all()
 
 
+def get_stock_records(database_service: DatabaseService) -> list[StockRecord]:
+    """Get all stock records in stock_records table.
+
+    Args:
+        database_service (DatabaseService): The object used to interact with database
+
+    Returns:
+        list: A list of all stock records in stock_records table
+    """
+    session = database_service.get_session()()
+    return session.query(StockRecord).all()
+
+
 def get_vending_machine_by_id(
     database_service: DatabaseService, vm_id: int
 ) -> VendingMachine:
@@ -95,6 +110,38 @@ def get_product_by_id(database_service: DatabaseService, prod_id: int) -> Produc
     """
     session = database_service.get_session()()
     return session.query(Product).filter(Product.id == prod_id).first()
+
+
+def get_stock_records_by_vm_id(
+    database_service: DatabaseService, vm_id: int
+) -> list[StockRecord]:
+    """Get stock records with the specified vm_id.
+
+    Args:
+        database_service (DatabaseService): The object used to interact with database
+        vm_id (int): An id of the interested vending machine
+
+    Returns:
+        list: A stock record list with the specified vm_id
+    """
+    session = database_service.get_session()()
+    return session.query(StockRecord).filter(StockRecord.vm_id == vm_id).all()
+
+
+def get_stock_records_by_prod_id(
+    database_service: DatabaseService, prod_id: int
+) -> list[StockRecord]:
+    """Get stock records with the specified prod_id.
+
+    Args:
+        database_service (DatabaseService): The object used to interact with database
+        prod_id (int): An id of the interested product
+
+    Returns:
+        list: A stock record list with the specified prod_id
+    """
+    session = database_service.get_session()()
+    return session.query(StockRecord).filter(StockRecord.prod_id == prod_id).all()
 
 
 def get_stock_by_vm_id_and_prod_id(
@@ -307,7 +354,12 @@ def update_product_stock(
     """
     session = database_service.get_session()()
     product_stock = (
-        session.query(Stock).filter(Stock.vm_id == new_product_stock.vm_id).first()
+        session.query(Stock)
+        .filter(
+            Stock.vm_id == new_product_stock.vm_id,
+            Stock.prod_id == new_product_stock.prod_id,
+        )
+        .first()
     )
     product_stock.stock = new_product_stock.stock
     session.commit()
@@ -345,4 +397,36 @@ def delete_product_stock(
         "data": None,
         "message": f"product {product_stock.prod_id} is successfully deleted "
         f"from vending machine {product_stock.vm_id}",
+    }
+
+
+def save_stock_records(database_service: DatabaseService) -> dict:
+    """Record current stocks.
+
+    Args:
+        database_service (DatabaseService): The object used to interact with database
+
+    Returns:
+        dict: A dictionary representing the response
+    """
+    session = database_service.get_session()()
+    stocks = session.query(Stock).all()
+    time_stamp = datetime.utcnow()
+    stock_records = [
+        StockRecord(stock.vm_id, stock.prod_id, stock.stock, time_stamp)
+        for stock in stocks
+    ]
+    session.add_all(stock_records)
+    session.commit()
+    return {
+        "status": "success",
+        "data": {
+            "post": list(
+                map(
+                    lambda stock_record: stock_record.to_dict(),
+                    stock_records,
+                )
+            )
+        },
+        "message": "current stocks are successfully recorded",
     }
