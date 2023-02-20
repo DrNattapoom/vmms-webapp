@@ -8,9 +8,15 @@
 </div>
 <div class="container" align="right">
     <div class="col-12">
-        <a class="btn btn-success btn-sm rounded-3 my-3" type="button" href="/vending_machines/add">
-            <i class="fa-solid fa-plus"></i> &nbsp; New Vending Machine
-        </a>
+        <form action="/api/stock_records/save" method="post" autocomplete="off">
+            <a class="btn btn-success btn-sm rounded-3 my-3" type="button" href="/vending_machines/add">
+                <i class="fa-solid fa-plus"></i> &nbsp; New Vending Machine
+            </a>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <button class="btn btn-primary btn-sm rounded-3 my-3" type="submit">
+                <i class="fa-solid fa-floppy-disk"></i> &nbsp; Save Stock Records
+            </button>
+        </form>
     </div>
 </div>
 <div class="container bg-dark border border-dark-subtle rounded-3">

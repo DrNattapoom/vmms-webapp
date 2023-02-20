@@ -20,8 +20,7 @@ def test_set_up(client: FlaskClient, vending_machine: dict):
 
 
 def test_add_product_stocks_status(client: FlaskClient):
-    test = client.get("/api/vending_machines/")
-    print(test.get_json())
+    client.get("/api/vending_machines/")
     response = client.post(
         f"{END_POINT}/1",
         data={

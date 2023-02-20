@@ -7,12 +7,12 @@ from vmms_webapp.models.base import Base
 
 class Stock(Base):
     """
-    A class used to represent a product.
+    A class used to represent a stock.
 
     Attributes:
         vm_id (int): A vending machine identification
-        prod_id (str): A product identification
-        stock (float): A product stock inside the vending machine
+        prod_id (int): A product identification
+        stock (int): A product stock inside the vending machine
     """
 
     __tablename__ = "stocks"
@@ -26,8 +26,8 @@ class Stock(Base):
 
         Args:
             vm_id (int): A vending machine identification
-            prod_id (str): A product identification
-            stock (float): A product stock inside the vending machine
+            prod_id (int): A product identification
+            stock (int): A product stock inside the vending machine
         """
         self.vm_id = vm_id
         self.prod_id = prod_id
