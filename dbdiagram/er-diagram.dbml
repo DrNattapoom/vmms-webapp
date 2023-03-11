@@ -1,0 +1,24 @@
+Table vending_machines {
+  id int [pk, increment]
+  name varchar
+  location varchar
+}
+
+Table products {
+  id int [pk, increment]
+  name varchar
+  price double
+}
+
+Table stocks {
+  vm_id int [pk, ref: > vending_machines.id]
+  prod_id int [pk, ref: > products.id]
+  stock int
+}
+
+Table stock_records {
+  time_stamp datetime [pk]
+  machine_id int [pk, ref: > vending_machines.id]
+  product_id int [pk, ref: > products.id]
+  stock int
+}

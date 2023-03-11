@@ -81,3 +81,9 @@ python app.py
 ```
 poetry run pytest
 ```
+
+# ER Diagram
+
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/60769071/224496021-b83198ef-ac4a-465d-aca7-77ee1d54f9d0.png" alt="swe-vmms-project" style="border-radius: 5px;">
+</div>
