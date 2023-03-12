@@ -1,0 +1,207 @@
+openapi: '3.0.2'
+
+info:
+  title: Vending Machine Management System API
+  description: APIs for managing vending machines and product stocks
+  version: '1.0'
+
+tags:
+  - name: vending-machines
+    description: Every APIs for vending machines
+  - name: product-stocks
+    description: Every APIs for the product stocks in vending machines
+  - name: stock-records
+    description: Every APIs for accessing the stock records
+
+paths:
+
+  /api/vending_machines/add:
+    post:
+      tags:
+        - vending-machines
+      summary: Add a new vending machine
+      description: Add a new vending machine to the database with the provided details
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendingMachine'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddVendingMachineSuccess'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddVendingMachineError'
+
+  /api/vending_machines/update/{vm_id}:
+    post:
+      tags:
+        - vending-machines
+      summary: Update a vending machine
+      description: Update an existing vending machine in the database with the provided data
+      parameters:
+        - name: vm_id
+          in: path
+          description: ID of the vending machine to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VendingMachine'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateVendingMachineSuccess'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateVendingMachineError'
+
+  /api/vending_machines/delete/{vm_id}:
+    post:
+      tags:
+        - vending-machines
+      summary: Deletes a vending machine
+      description: Deletes a vending machine machine in the database with the provided ID
+      parameters:
+        - name: vm_id
+          in: path
+          description: ID of the vending machine to delete.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteVendingMachineSuccess'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteVendingMachineError'
+
+components:
+  schemas:
+
+    VendingMachine:
+      type: object
+      properties:
+        name:
+          type: string
+          example: 'vm_001'
+        location:
+          type: string
+          example: 'canteen'
+
+    AddVendingMachineSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          properties:
+            post:
+              $ref: '#/components/schemas/VendingMachine'
+        message:
+          type: string
+          example: 'vending machine 1 is successfully added'
+
+    AddVendingMachineError:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        data:
+          type: object
+          properties:
+            post:
+              type: object
+        message:
+          type: string
+          example: 'unable to add new vending machine'
+
+    UpdateVendingMachineSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          properties:
+            post:
+              $ref: '#/components/schemas/VendingMachine'
+        message:
+          type: string
+          example: 'vending machine 1 is successfully updated'
+
+    UpdateVendingMachineError:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        data:
+          type: object
+          properties:
+            post:
+              type: object
+        message:
+          type: string
+          example: 'unable to update vending machine 1'
+
+    DeleteVendingMachineSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          properties:
+            post:
+              type: object
+              example: None
+        message:
+          type: string
+          example: 'vending machine 1 is successfully deleted'
+
+    DeleteVendingMachineError:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        data:
+          type: object
+          properties:
+            post:
+              type: object
+              example: None
+        message:
+          type: string
+          example: 'unable to delete vending machine 1'
