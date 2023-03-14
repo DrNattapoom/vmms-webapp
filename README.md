@@ -82,6 +82,68 @@ python app.py
 poetry run pytest
 ```
 
+# APIs
+
+APIs for managing vending machines and product stocks
+
+### Vending Machines
+
+Add a new vending machine
+```
+POST 	/api/vending_machines/add
+```
+
+Update a vending machine
+```
+POST 	/api/vending_machines/update/{vm_id}
+```
+
+Deletes a vending machine
+```
+POST 	/api/vending_machines/delete/{vm_id}
+```
+
+### Product Stocks
+
+Add product stocks to a vending machine
+```
+POST 	/api/product_stocks/add/{vm_id}
+```
+
+Update product stock in a vending machine
+```
+POST 	/api/product_stocks/update/{vm_id}/{prod_id}
+```
+
+Delete a product stock from a vending machine
+```
+POST 	/api/product_stocks/delete/{vm_id}/{prod_id}
+```
+
+### Stock Records
+
+Retrieve all stock records
+```
+GET 	/api/stock_records
+```
+
+Save current stock records
+```
+POST 	/api/stock_records/save
+```
+
+Retrieves timeline of stock records for a vending machine
+```
+GET 	/api/stock_records/timeline/vending_machines/{vm_id}
+```
+
+Retrieves the stock records timeline for a given product
+```
+GET     /api/stock_records/timeline/products/{prod_id}
+```
+
+For more information, please checkout the `docs/openapi.yml`.
+
 # ER Diagram
 
 <div align="center">
