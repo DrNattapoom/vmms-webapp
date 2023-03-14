@@ -101,6 +101,111 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeleteVendingMachineError'
 
+  /api/product_stocks/add/{vm_id}:
+    post:
+      tags:
+        - product-stocks
+      summary: Add product stocks to a vending machine
+      description: Add product stocks to an existing vending machine in the database
+      parameters:
+        - name: vm_id
+          in: path
+          description: ID of the vending machine to add product stocks to
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductStock'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddProductStockSuccess'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddProductStockError'
+
+  /api/product_stocks/update/{vm_id}/{prod_id}:
+    post:
+      tags:
+        - product-stocks
+      summary: Update product stock in a vending machine
+      description: Update the product stock for a specific product in a vending machine
+      parameters:
+        - name: vm_id
+          in: path
+          description: ID of the vending machine that the product is in
+          required: true
+          schema:
+            type: integer
+        - name: prod_id
+          in: path
+          description: ID of the product to update
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductStock'
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProductStockSuccess'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProductStockError'
+
+  /api/product_stocks/delete/{vm_id}/{prod_id}:
+    post:
+      tags:
+        - product-stocks
+      summary: Delete a product stock from a vending machine
+      description: Delete a product stock from the database for a given vending machine ID and product ID
+      parameters:
+        - name: vm_id
+          in: path
+          description: ID of the vending machine that the product is in
+          required: true
+          schema:
+            type: integer
+        - name: prod_id
+          in: path
+          description: ID of the product to delete
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteProductStockSuccess'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteProductStockError'
+
 components:
   schemas:
 
@@ -185,7 +290,7 @@ components:
           properties:
             post:
               type: object
-              example: None
+              example: null
         message:
           type: string
           example: 'vending machine 1 is successfully deleted'
@@ -201,7 +306,112 @@ components:
           properties:
             post:
               type: object
-              example: None
+              example: null
         message:
           type: string
           example: 'unable to delete vending machine 1'
+
+    ProductStock:
+      type: object
+      properties:
+        vm_id:
+          type: integer
+          example: 1
+        prod_id:
+          type: integer
+          example: 1
+        stock:
+          type: integer
+          example: 100
+
+    AddProductStockSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          properties:
+            post:
+              $ref: '#/components/schemas/ProductStock'
+        message:
+          type: string
+          example: 'new product stock is successfully added to vending machine 1'
+
+    AddProductStockError:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        data:
+          type: object
+          properties:
+            post:
+              type: object
+        message:
+          type: string
+          example: 'unable to add new product stock to vending machine 1'
+
+    UpdateProductStockSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          properties:
+            post:
+              $ref: '#/components/schemas/ProductStock'
+        message:
+          type: string
+          example: 'product 1 stock is successfully updated in vending machine 1'
+
+    UpdateProductStockError:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        data:
+          type: object
+          properties:
+            post:
+              type: object
+        message:
+          type: string
+          example: 'unable to update product 1 in vending machine 1'
+
+    DeleteProductStockSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          properties:
+            post:
+              type: object
+              example: null
+        message:
+          type: string
+          example: 'product 1 is successfully deleted from vending machine 1'
+
+    DeleteProductStockError:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        data:
+          type: object
+          properties:
+            post:
+              type: object
+              example: null
+        message:
+          type: string
+          example: 'unable to delete product 1 from vending machine 1'
