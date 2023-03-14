@@ -11,6 +11,11 @@ MUIC ICCS372 Software Engineering
 ├── .github
 │   └── workflow
 │       └── python-tests.yml
+├── docs
+│   ├── dbdiagram
+│   │   ├── er-diagram.dbml
+│   │   └── er-diagram.png
+│   └── openapi.yml
 ├── src
 │   └── vmms-webapp
 │       ├── database
