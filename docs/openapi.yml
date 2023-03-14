@@ -206,6 +206,100 @@ paths:
               schema:
                 $ref: '#/components/schemas/DeleteProductStockError'
 
+  /api/stock_records:
+    get:
+      tags:
+        - stock-records
+      summary: Retrieve all stock records
+      description: Retrieve all stock records from the database
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetStockRecordsSuccess'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetStockRecordsError'
+
+  /api/stock_records/save:
+    post:
+      tags:
+        - stock-records
+      summary: Save current stock records
+      description: Save the current stock records to the database
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveStockRecordsSuccess'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SaveStockRecordsError'
+
+  /api/stock_records/timeline/vending_machines/{vm_id}:
+    get:
+      tags:
+        - stock-records
+      summary: Retrieves timeline of stock records for a vending machine
+      description: Retrieves a list of stock records for a given vending machine ID and returns them sorted by product ID and time stamp
+      parameters:
+        - name: vm_id
+          in: path
+          description: ID of the vending machine to retrieve stock records from
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTimelineVendingMachineSuccess'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTimelineVendingMachineError'
+
+  /api/stock_records/timeline/products/{prod_id}:
+    get:
+      tags:
+        - stock-records
+      summary: Retrieves the stock records timeline for a given product
+      description: Retrieves a list of all stock records associated with the provided product ID, sorted by vending machine and timestamp.
+      parameters:
+        - name: prod_id
+          in: path
+          description: ID of the product to retrieve stock records for
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTimelineProductSuccess'
+        '400':
+          description: 'Bad request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTimelineProductError'
+
 components:
   schemas:
 
@@ -415,3 +509,152 @@ components:
         message:
           type: string
           example: 'unable to delete product 1 from vending machine 1'
+
+    StockRecord:
+      type: object
+      properties:
+        time_stamp:
+          type: string
+          format: date-time
+          example: 2023-02-20 04:43:23.960195
+        vm_id:
+          type: integer
+          example: 1
+        prod_id:
+          type: integer
+          example: 1
+        stock:
+          type: integer
+          example: 100
+
+    GetStockRecordsSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          properties:
+            get:
+              type: array
+              items:
+                $ref: '#/components/schemas/StockRecord'
+        message:
+          type: string
+          example: 'all stock records are successfully retrieved'
+
+    GetStockRecordsError:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        data:
+          type: object
+          properties:
+            get:
+              type: array
+              example: []
+        message:
+          type: string
+          example: 'unable to retrieve stock records'
+
+    SaveStockRecordsSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          properties:
+            post:
+              type: array
+              items:
+                $ref: '#/components/schemas/StockRecord'
+        message:
+          type: string
+          example: 'current stocks are successfully recorded'
+
+    SaveStockRecordsError:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        data:
+          type: object
+          properties:
+            post:
+              type: array
+              example: []
+        message:
+          type: string
+          example: 'unable to record current stocks'
+
+    GetTimelineVendingMachineSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          properties:
+            get:
+              type: array
+              items:
+                $ref: '#/components/schemas/StockRecord'
+        message:
+          type: string
+          example: 'all stock records of vending machine 1 are successfully retrieved'
+
+    GetTimelineVendingMachineError:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        data:
+          type: object
+          properties:
+            get:
+              type: array
+              example: []
+        message:
+          type: string
+          example: 'unable to retrieve stock records of vending machine 1'
+
+    GetTimelineProductSuccess:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success]
+        data:
+          type: object
+          properties:
+            get:
+              type: array
+              items:
+                $ref: '#/components/schemas/StockRecord'
+        message:
+          type: string
+          example: 'all stock records of product 1 are successfully retrieved'
+
+    GetTimelineProductError:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [error]
+        data:
+          type: object
+          properties:
+            get:
+              type: array
+              example: []
+        message:
+          type: string
+          example: 'unable to retrieve stock records of product 1'
